@@ -34,7 +34,7 @@ app.get('*',function (req,res) {
 
 
 // port
-const PORT = 5000 || process.env.PORT
+const PORT = 4000 || process.env.PORT
 
 // listen server
 app.listen(PORT , () => {

@@ -11,6 +11,7 @@ import axios from "axios";
 import Spinner from "../components/Spinner";
 import moment from "moment";
 import Analytics from "../components/Analytics";
+// import { getAllTransection } from "../../../server/controllers/transectionCtrl";
 const { RangePicker } = DatePicker;
 
 function Homepage() {
@@ -67,29 +68,29 @@ function Homepage() {
       ),
     },
   ];
+  const getAllTransection = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      setLoading(true);
+      const res = await axios.post("api/v1/transections/get-transection", {
+        userid: user._id,
+        frequency,
+        selectedDate,
+        type,
+      });
 
+      setLoading(false);
+      setAllTransection(res.data);
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+      message.error("Fetch issue with Transection");
+    }
+  };
   // useEffect Hook
   useEffect(() => {
     // get all transection
-    const getAllTransection = async () => {
-      try {
-        const user = JSON.parse(localStorage.getItem("user"));
-        setLoading(true);
-        const res = await axios.post("api/v1/transections/get-transection", {
-          userid: user._id,
-          frequency,
-          selectedDate,
-          type,
-        });
-
-        setLoading(false);
-        setAllTransection(res.data);
-        console.log(res.data);
-      } catch (error) {
-        console.log(error);
-        message.error("Fetch issue with Transection");
-      }
-    };
+   
     getAllTransection();
   }, [frequency, selectedDate, type,setAllTransection]);
 
@@ -100,6 +101,7 @@ function Homepage() {
       await axios.post("api/v1/transections/delete-transection", {
         transactionId: record._id,
       });
+      getAllTransection();
       setLoading(false);
       message.success("Transection deleted");
     } catch (error) {
@@ -132,6 +134,7 @@ function Homepage() {
         setLoading(false);
         message.success("Transaction Added Successfully");
       }
+      getAllTransection();
 
       setShowModal(false);
       setEditable(null);
